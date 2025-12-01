@@ -22,6 +22,8 @@ SelfA2C = TypeVar("SelfA2C", bound="A2C")
 
 class A2C(OnPolicyAlgorithm):
     """
+    Mark Point
+    
     Advantage Actor Critic (A2C)
 
     Paper: https://arxiv.org/abs/1602.01783

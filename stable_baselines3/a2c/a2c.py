@@ -2,13 +2,20 @@ from typing import Any, ClassVar, Optional, TypeVar, Union
 
 import torch as th
 from gymnasium import spaces
+    # 定义强化学习环境的动作和观察空间。spaces.Box：连续空间；spaces.Discrete：离散空间；spaces.MultiDiscrete：多维离散空间；spaces.Dict：字典空间（多输入环境）
 from torch.nn import functional as F
+    # 提供神经网络的函数式接口和激活函数。F.relu()：ReLU激活函数；F.softmax()：Softmax函数（用于策略输出）；F.mse_loss()：均方误差损失；F.cross_entropy()：交叉熵损失
 
 from stable_baselines3.common.buffers import RolloutBuffer
+    # 经验缓冲回放区，存储与环境交互的经验（状态、动作、奖励等）。收集一个回合（rollout）的数据；计算优势估计和回报；批量采样用于训练
 from stable_baselines3.common.on_policy_algorithm import OnPolicyAlgorithm
+    # 所有同策略算法（如A2C、PPO）的基类。通用的训练循环；与环境交互的逻辑；模型保存/加载方法；基本的超参数
 from stable_baselines3.common.policies import ActorCriticCnnPolicy, ActorCriticPolicy, BasePolicy, MultiInputActorCriticPolicy
+    # 策略网络。ActorCriticPolicy：标准MLP，处理向量状态；ActorCriticCnnPolicy：CNN网络，处理图像状态；MultiInputActorCriticPolicy：多模态输入（如向量+图像）
 from stable_baselines3.common.type_aliases import GymEnv, MaybeCallback, Schedule
+    # 定义常用的类型别名，统一接口。GymEnv：强化学习环境接口；MaybeCallback：可选的回调函数；Schedule：学习率/熵系数等参数的调度函数
 from stable_baselines3.common.utils import explained_variance
+    # 计算优势函数的解释方差。评估价值函数预测的好坏；监控训练过程；公式：1 - Var(A - V)/Var(A)，越接近1越好
 
 SelfA2C = TypeVar("SelfA2C", bound="A2C")
 

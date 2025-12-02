@@ -42,28 +42,58 @@ class A2C(OnPolicyAlgorithm):
     :param gae_lambda: Factor for trade-off of bias vs variance for Generalized Advantage Estimator.
         Equivalent to classic advantage when set to 1.
     :param ent_coef: Entropy coefficient for the loss calculation
+        # 熵系数，策略梯度算法中的正则化项系数，用于鼓励探索
     :param vf_coef: Value function coefficient for the loss calculation
+        # 价值函数损失系数，用于平衡策略损失和价值损失在总损失中的权重
     :param max_grad_norm: The maximum value for the gradient clipping
+        # 梯度裁剪是一种稳定深度学习训练的技术，通过限制梯度的大小来防止梯度爆炸问题
     :param rms_prop_eps: RMSProp epsilon. It stabilizes square root computation in denominator
         of RMSProp update
+        # RMSProp优化器的epsilon参数，用于数值稳定性的一个小常数，RMSProp（Root Mean Square Propagation）是一种自适应学习率优化算法，特别适合处理非平稳目标（如强化学习）。
+        # 两者都用于稳定训练，但方式不同：
+        # rms_prop_eps: 自适应学习率中的数值稳定性
+        # max_grad_norm: 硬性梯度裁剪
+        
+        # 通常一起使用：
+        # optimizer = RMSprop(eps=rms_prop_eps)  # 自适应调整学习率
+        # torch.nn.utils.clip_grad_norm_(..., max_norm=max_grad_norm)  # 硬性限制
     :param use_rms_prop: Whether to use RMSprop (default) or Adam as optimizer
+        # 优化器选择参数，用于决定A2C算法使用RMSprop还是Adam优化器
     :param use_sde: Whether to use generalized State Dependent Exploration (gSDE)
         instead of action noise exploration (default: False)
+        # 广义状态依赖探索（State-Dependent Exploration, gSDE）选择参数，用于替代传统动作噪声的现代探索策略，是一种自适应的探索策略
+        # 传统动作噪声 vs gSDE
+        # 传统方法：动作 = 策略输出 + 固定噪声（如高斯噪声）
+        # gSDE方法：动作 = 策略输出 + 状态依赖的自适应噪声
     :param sde_sample_freq: Sample a new noise matrix every n steps when using gSDE
         Default: -1 (only sample at the beginning of the rollout)
+        # gSDE噪声采样频率参数，用于控制状态依赖探索噪声的更新频率
+        # 默认-1：每个rollout/episode采样一次（最稳定）
+        # n>0：每n步采样一次（平衡探索与稳定性）
+        # 1：每步采样（最大探索）
     :param rollout_buffer_class: Rollout buffer class to use. If ``None``, it will be automatically selected.
+        # Rollout缓冲区类选择参数，用于自定义经验回放缓冲区，是存储智能体与环境交互经验的容器，在同策略算法（如A2C、PPO）中特别重要。
     :param rollout_buffer_kwargs: Keyword arguments to pass to the rollout buffer on creation.
+        # Rollout缓冲区创建参数，用于向自定义缓冲区传递额外参数
     :param normalize_advantage: Whether to normalize or not the advantage
+        # 优势归一化参数，用于标准化优势函数的尺度
     :param stats_window_size: Window size for the rollout logging, specifying the number of episodes to average
         the reported success rate, mean episode length, and mean reward over
+        # 统计窗口大小参数，用于平滑训练日志的滚动平均计算，这个参数不直接影响算法性能，但极大影响训练监控和超参数调优的效率
     :param tensorboard_log: the log location for tensorboard (if None, no logging)
+        # TensorBoard日志目录参数，用于启用和配置TensorBoard训练可视化
     :param policy_kwargs: additional arguments to be passed to the policy on creation. See :ref:`a2c_policies`
+        # 策略网络参数，用于自定义策略网络架构和配置
     :param verbose: Verbosity level: 0 for no output, 1 for info messages (such as device or wrappers used), 2 for
         debug messages
+        # 详细输出控制参数，用于控制训练过程中的信息输出级别
     :param seed: Seed for the pseudo random generators
+        # 随机种子参数，用于控制实验的可重复性
     :param device: Device (cpu, cuda, ...) on which the code should be run.
         Setting it to auto, the code will be run on the GPU if possible.
+        # 选择GPU或CPU进行计算
     :param _init_setup_model: Whether or not to build the network at the creation of the instance
+        # 模型初始化控制参数，用于延迟或控制神经网络构建时机
     """
 
     policy_aliases: ClassVar[dict[str, type[BasePolicy]]] = {

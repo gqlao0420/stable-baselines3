@@ -50,9 +50,15 @@ def maybe_make_env(env: Union[GymEnv, str], verbose: int) -> GymEnv:
 
     :param env: The environment to learn from.
     :param verbose: Verbosity level: 0 for no output, 1 for indicating if environment is created
+        # verbose - 0: 静默模式，不做输出
+        # verbose - 1: 信息模式
     :return A Gym (vector) environment.
+
+        # 智能的环境创建辅助函数 - 1.统一接口：让API同时支持环境实例和环境名称字符串；2.自动创建：如果是字符串，自动调用gym.make()创建环境
+        # 如果env可以是gym中已经定义好的实例名称(str类型)，也可以是用户自己定义的实例(class类型)
     """
     if isinstance(env, str):
+        # 判断env是不是string类型
         env_id = env
         if verbose >= 1:
             print(f"Creating environment from the given name '{env_id}'")

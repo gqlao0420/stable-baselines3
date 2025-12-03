@@ -217,21 +217,27 @@ class BaseAlgorithm(ABC):
         :param verbose: Verbosity level: 0 for no output, 1 for indicating wrappers used
         :param monitor_wrapper: Whether to wrap the env in a ``Monitor`` when possible.
         :return: The wrapped environment.
+            # 这个 _wrap_env 函数是 Stable-Baselines3 环境包装的核心函数，负责自动化地为原始环境添加必要的包装器
         """
         if not isinstance(env, VecEnv):
             # Patch to support gym 0.21/0.26 and gymnasium
+            # 环境修补 - 处理不同版本Gym API的差异，确保环境行为一致
             env = _patch_env(env)
+            # 添加Monitor包装器 - 记录每个episode的奖励、长度等信息；支持将训练数据保存到文件；为TensorBoard等工具提供数据
             if not is_wrapped(env, Monitor) and monitor_wrapper:
                 if verbose >= 1:
                     print("Wrapping the env with a `Monitor` wrapper")
                 env = Monitor(env)
             if verbose >= 1:
                 print("Wrapping the env in a DummyVecEnv.")
+            # 转换为向量化环境 - 将普通环境包装为向量化环境（VecEnv）；即使只有一个环境，也保持统一的接口；为可能的并行化做准备
             env = DummyVecEnv([lambda: env])  # type: ignore[list-item, return-value]
 
         # Make sure that dict-spaces are not nested (not supported)
+        # 检查不支持嵌套的字典空间 - 确保观测空间不是嵌套的字典空间（Stable-Baselines3不支持）
         check_for_nested_spaces(env.observation_space)
 
+        # 处理图像通道顺序
         if not is_vecenv_wrapped(env, VecTransposeImage):
             wrap_with_vectranspose = False
             if isinstance(env.observation_space, spaces.Dict):
@@ -250,6 +256,8 @@ class BaseAlgorithm(ABC):
             if wrap_with_vectranspose:
                 if verbose >= 1:
                     print("Wrapping the env in a VecTransposeImage.")
+
+                # 将图像从 (H, W, C) 转换为 (C, H, W)（PyTorch要求的通道优先格式）；统一不同环境的图像格式
                 env = VecTransposeImage(env)
 
         return env

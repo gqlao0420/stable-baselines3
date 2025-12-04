@@ -12,6 +12,7 @@ from stable_baselines3.common.buffers import DictRolloutBuffer, RolloutBuffer
 from stable_baselines3.common.callbacks import BaseCallback
 from stable_baselines3.common.policies import ActorCriticPolicy
 from stable_baselines3.common.type_aliases import GymEnv, MaybeCallback, Schedule
+    # Schedule 是学习率调度器，用于动态调整学习率
 from stable_baselines3.common.utils import obs_as_tensor, safe_mean
 from stable_baselines3.common.vec_env import VecEnv
 
@@ -89,6 +90,7 @@ class OnPolicyAlgorithm(BaseAlgorithm):
     :param _init_setup_model: Whether or not to build the network at the creation of the instance
         # 模型初始化控制参数，用于延迟或控制神经网络构建时机
     :param supported_action_spaces: The action spaces supported by the algorithm.
+        # supported_action_spaces 参数用于指定算法支持的动作空间类型
     """
 
     rollout_buffer: RolloutBuffer # 声明 rollout_buffer 的类型是 RolloutBuffer
@@ -175,7 +177,7 @@ class OnPolicyAlgorithm(BaseAlgorithm):
         # Warn when not using CPU with MlpPolicy
         self._maybe_recommend_cpu()
 
-    def _maybe_recommend_cpu(self, mlp_class_name: str = "ActorCriticPolicy") -> None:
+    def _maybe_recommend_cpu(self, mlp_class_name: str = "ActorCriticPolicy") -> None:  
         """
         Recommend to use CPU only when using A2C/PPO with MlpPolicy.
 

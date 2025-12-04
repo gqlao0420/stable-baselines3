@@ -89,9 +89,9 @@ class FloatSchedule:
     """
 
     def __init__(self, value_schedule: Union[Schedule, float]):
-        if isinstance(value_schedule, FloatSchedule):
+        if isinstance(value_schedule, FloatSchedule): # 判断value_schedule是不是FloatSchedule Class
             self.value_schedule: Schedule = value_schedule.value_schedule
-        elif isinstance(value_schedule, (float, int)):
+        elif isinstance(value_schedule, (float, int)): # 判断value_schedule是不是Float类型
             self.value_schedule = ConstantSchedule(float(value_schedule))
         else:
             assert callable(value_schedule), f"The learning rate schedule must be a float or a callable, not {value_schedule}"
@@ -140,12 +140,14 @@ class ConstantSchedule:
     Useful for fixed learning rates or clip ranges.
 
     :param val: constant value
+    ConstantSchedule.__init__(val), 设定CConstantSchedule.__call__(any_val)返回值永远是val，any_val是什么！
     """
 
     def __init__(self, val: float):
         self.val = val
 
     def __call__(self, _: float) -> float:
+        # _ - 只是用来迷惑输入
         return self.val
 
     def __repr__(self) -> str:

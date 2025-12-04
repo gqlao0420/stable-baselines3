@@ -117,6 +117,7 @@ class LinearSchedule:
     :param end: value to end with if ``progress_remaining`` = 0
     :param end_fraction: fraction of ``progress_remaining``  where end is reached e.g 0.1
         then end is reached after 10% of the complete training process.
+        设定起始学习率和终止学习率，同时规定当训练进度剩余百分比等于
     """
 
     def __init__(self, start: float, end: float, end_fraction: float) -> None:
@@ -126,8 +127,10 @@ class LinearSchedule:
 
     def __call__(self, progress_remaining: float) -> float:
         if (1 - progress_remaining) > self.end_fraction:
+            # 当剩余的训练进度 > end_fraction %，就返回end
             return self.end
         else:
+            # 当剩余训练进度 < end_fraction %，就按下列逻辑返回
             return self.start + (1 - progress_remaining) * (self.end - self.start) / self.end_fraction
 
     def __repr__(self) -> str:

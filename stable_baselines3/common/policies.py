@@ -207,7 +207,11 @@ class BaseModel(nn.Module):
         This affects certain modules, such as batch normalisation and dropout.
 
         :param mode: if true, set to training mode, else set to evaluation mode
-            # 这个 mode 参数用于 切换模型的训练模式（training mode）和评估模式（evaluation mode）
+            # 1. 这个 mode 参数用于 切换模型的训练模式（training mode）和评估模式（evaluation mode）
+            # 2. self.train(mode) 是 PyTorch nn.Module 的内置方法，不是 Stable-Baselines3 自定义的
+            # 3. 继承关系：BasePolicy → nn.Module，所以继承了 train() 方法
+            # 4. 设计模式：Stable-Baselines3 通过 set_training_mode() 包装了底层的 train() 方法，这是良好的软件工程实践
+            # 5. 好处：封装了实现细节，提供了更清晰的业务接口，方便未来扩展
         """
         self.train(mode)
 

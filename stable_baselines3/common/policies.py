@@ -207,6 +207,7 @@ class BaseModel(nn.Module):
         This affects certain modules, such as batch normalisation and dropout.
 
         :param mode: if true, set to training mode, else set to evaluation mode
+            # 这个 mode 参数用于 切换模型的训练模式（training mode）和评估模式（evaluation mode）
         """
         self.train(mode)
 

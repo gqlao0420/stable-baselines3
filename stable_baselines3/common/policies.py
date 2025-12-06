@@ -64,8 +64,8 @@ class BaseModel(nn.Module):
         self,
         observation_space: spaces.Space,
         action_space: spaces.Space,
-        features_extractor_class: type[BaseFeaturesExtractor] = FlattenExtractor,
-        features_extractor_kwargs: Optional[dict[str, Any]] = None,
+        features_extractor_class: type[BaseFeaturesExtractor] = FlattenExtractor, # _class - 代表这是一个class类
+        features_extractor_kwargs: Optional[dict[str, Any]] = None, # _kwargs - 代表这是一个字典，可以通过在前面加“**”，将字典中的“键-值”对解包为“关键字参数”传递给函数或类的构造函数
         features_extractor: Optional[BaseFeaturesExtractor] = None,
         normalize_images: bool = True,
         optimizer_class: type[th.optim.Optimizer] = th.optim.Adam,

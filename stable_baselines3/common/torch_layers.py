@@ -191,6 +191,7 @@ def create_mlp(
 
 class MlpExtractor(nn.Module):
     """
+        # latent representation - 隐藏层
     Constructs an MLP that receives the output from a previous features extractor (i.e. a CNN) or directly
     the observations (if no features extractor is applied) as an input and outputs a latent representation
     for the policy and a value network.
@@ -203,15 +204,31 @@ class MlpExtractor(nn.Module):
     2. ``[<list of layer sizes>]``: "shortcut" in case the amount and size of the layers
         in the policy and value nets are the same. Same as ``dict(vf=int_list, pi=int_list)``
         where int_list is the same for the actor and critic.
+        # 参数允许指定隐藏层的数量和大小。
+        # 它可以是以下任一形式：
+        # 1. ``dict(vf=[<层大小列表>], pi=[<层大小列表>])``: 
+        #    分别指定策略网络和价值网络的层数和大小。
+        #    如果缺少任一键(pi或vf)，则该键对应的网络将视为零层。
+        # 2. ``[<层大小列表>]``: 当策略网络和价值网络的层数和大小相同时的"快捷方式"。
+        #    等同于 ``dict(vf=int_list, pi=int_list)``，其中int_list对actor和critic是相同的。
 
     .. note::
         If a key is not specified or an empty list is passed ``[]``, a linear network will be used.
+        # 如果未指定某个键或传递了空列表 ``[]``，将使用线性网络。
+        # 空列表 [] 表示：使用线性网络（没有隐藏层）
+        # 例如：
+        # pi_layers = []  # 表示：输入 → 输出（直接连接）
+        # vf_layers = [64, 32]  # 表示：输入 → 64神经元 → 32神经元 → 输出
 
     :param feature_dim: Dimension of the feature vector (can be the output of a CNN)
+        # 特征向量的维度(可以是CNN的输出)
     :param net_arch: The specification of the policy and value networks.
+        # 策略网络和价值网络的规格。
         See above for details on its formatting.
     :param activation_fn: The activation function to use for the networks.
+        # 网络使用的激活函数
     :param device: PyTorch device.
+        # cpu or gpu
     """
 
     def __init__(
@@ -223,6 +240,7 @@ class MlpExtractor(nn.Module):
     ) -> None:
         super().__init__()
         device = get_device(device)
+            # 以下4个变量，在__init__()之外不能被访问的
         policy_net: list[nn.Module] = []
         value_net: list[nn.Module] = []
         last_layer_dim_pi = feature_dim
@@ -230,7 +248,9 @@ class MlpExtractor(nn.Module):
 
         # save dimensions of layers in policy and value nets
         if isinstance(net_arch, dict):
+                # 判断net_arch是不是字典型变量
             # Note: if key is not specified, assume linear network
+                # dict.get('key', []) - 使用字典.get()函数，可以根据key返回value，如果不存在对应的key，就会返回空列表[]
             pi_layers_dims = net_arch.get("pi", [])  # Layer sizes of the policy network
             vf_layers_dims = net_arch.get("vf", [])  # Layer sizes of the value network
         else:
@@ -252,6 +272,8 @@ class MlpExtractor(nn.Module):
 
         # Create networks
         # If the list of layers is empty, the network will just act as an Identity module
+            # 单星号 *：用于解包元组/列表
+            # 双星号 **：用于解包字典
         self.policy_net = nn.Sequential(*policy_net).to(device)
         self.value_net = nn.Sequential(*value_net).to(device)
 

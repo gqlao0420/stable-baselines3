@@ -56,6 +56,21 @@ class BaseModel(nn.Module):
         ``th.optim.Adam`` by default
     :param optimizer_kwargs: Additional keyword arguments,
         excluding the learning rate, to pass to the optimizer
+
+        # 单星号 *：用于解包元组/列表
+        # 双星号 **：用于解包字典
+            # 参数配置
+            # params = {'b': 20, 'c': 30, 'd': 40}
+            # def complex_function(a, b, c=3, d=4, e=5, **kwargs):
+                # 复杂的函数参数结构
+                # :param a: 必需位置参数
+                # :param b: 必需关键字参数
+                # :param c, d, e: 可选关键字参数（有默认值）
+                # :param **kwargs: 接收额外的关键字参数
+
+            # args = [1, 2]
+            # kwargs = {'c': 3, 'd': 5}
+            # result = func(*args, **kwargs)  # 等价于 func(1, 2, c=3, d=5)
     """
 
     optimizer: th.optim.Optimizer

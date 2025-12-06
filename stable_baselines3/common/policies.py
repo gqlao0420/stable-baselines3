@@ -666,6 +666,7 @@ class ActorCriticPolicy(BasePolicy):
         self, obs: PyTorchObs, features_extractor: Optional[BaseFeaturesExtractor] = None
     ) -> Union[th.Tensor, tuple[th.Tensor, th.Tensor]]:
         """
+        # 提取特征函数
         Preprocess the observation if needed and extract features.
 
         :param obs: Observation

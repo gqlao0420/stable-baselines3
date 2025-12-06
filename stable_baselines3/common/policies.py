@@ -442,6 +442,7 @@ class ActorCriticPolicy(BasePolicy):
     :param features_extractor_kwargs: Keyword arguments
         to pass to the features extractor.
     :param share_features_extractor: If True, the features extractor is shared between the policy and value networks.
+        # 控制提取的特征是否在Actor和Critic这两个网络之间共享，policy network 和 value network分别对应Actor 和 Critic
     :param normalize_images: Whether to normalize images or not,
          dividing by 255.0 (True by default)
     :param optimizer_class: The optimizer to use,

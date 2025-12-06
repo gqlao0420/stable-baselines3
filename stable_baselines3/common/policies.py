@@ -510,14 +510,16 @@ class ActorCriticPolicy(BasePolicy):
         self.ortho_init = ortho_init
 
         self.share_features_extractor = share_features_extractor
-        self.features_extractor = self.make_features_extractor()
+        self.features_extractor = self.make_features_extractor() # 定义特征提取器，假定命名 - A
         self.features_dim = self.features_extractor.features_dim
         if self.share_features_extractor:
+            # Actor与Critic公用一个特征提取器(网络)
             self.pi_features_extractor = self.features_extractor
             self.vf_features_extractor = self.features_extractor
         else:
-            self.pi_features_extractor = self.features_extractor
-            self.vf_features_extractor = self.make_features_extractor()
+            # Actor与Critic分别使用不同的特征提取器(网络)
+            self.pi_features_extractor = self.features_extractor # 这个是将Actor使用的特征提取器指向已经定义好的特征提取器A！！！
+            self.vf_features_extractor = self.make_features_extractor() # 定义特征提取器，假定命名 - B，要注意每次使用self.make_features_extractor()就会创建一个新的class！！！否则，会理解成if-else中Actor-Critic的特征提取器是一样的！
 
         self.log_std_init = log_std_init
         dist_kwargs = None

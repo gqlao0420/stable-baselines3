@@ -128,6 +128,7 @@ class BaseModel(nn.Module):
         :return: The extracted features
         """
         preprocessed_obs = preprocess_obs(obs, self.observation_space, normalize_images=self.normalize_images)
+            # preprocess_obs() - 可以处理不同类型的obs，使stable-base3具备多模态处理能力
         return features_extractor(preprocessed_obs)
 
     def _get_constructor_parameters(self) -> dict[str, Any]:

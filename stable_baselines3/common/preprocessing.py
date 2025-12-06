@@ -104,13 +104,19 @@ def preprocess_obs(
     :param normalize_images: Whether to normalize images or not
         (True by default)
     :return:
+        # 这个递归函数是一个 优雅的解决方案，用于处理可能嵌套的字典观察空间：
+        # 递归逻辑：对字典的每个值递归调用自身
+        # 终止条件：当遇到非字典空间时停止递归
+        # 灵活处理：支持任意深度的嵌套结构
+        # 类型安全：对不同类型的观察空间应用不同的预处理
+        # 这种设计使得Stable-Baselines3能够灵活处理各种复杂的多模态观察空间，是框架可扩展性的关键部分。
     """
     if isinstance(observation_space, spaces.Dict):
         # Do not modify by reference the original observation
         assert isinstance(obs, dict), f"Expected dict, got {type(obs)}"
         preprocessed_obs = {}
         for key, _obs in obs.items():
-            preprocessed_obs[key] = preprocess_obs(_obs, observation_space[key], normalize_images=normalize_images)
+            preprocessed_obs[key] = preprocess_obs(_obs, observation_space[key], normalize_images=normalize_images) # 递归部分
         return preprocessed_obs  # type: ignore[return-value]
 
     assert isinstance(obs, th.Tensor), f"Expecting a torch Tensor, but got {type(obs)}"

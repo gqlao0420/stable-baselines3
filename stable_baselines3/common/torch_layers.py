@@ -34,8 +34,14 @@ class FlattenExtractor(BaseFeaturesExtractor):
     """
     Feature extract that flatten the input.
     Used as a placeholder when feature extraction is not needed.
+        # FlattenExtractor 的核心功能：将输入张量展平为一维向量
+        # 例如：将形状为 [batch, 2, 3, 4] 的张量展平为 [batch, 24]
 
     :param observation_space: The observation space of the environment
+        # 展平操作：将多维输入转换为一维向量
+        # 占位作用：为不需要复杂特征提取的环境提供统一接口
+        # 零参数：不包含可学习的参数，只是形状变换
+        # 保持信息：不丢失原始观察的任何信息
     """
 
     def __init__(self, observation_space: gym.Space) -> None:

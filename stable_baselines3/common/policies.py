@@ -558,6 +558,18 @@ class ActorCriticPolicy(BasePolicy):
         self.action_dist = make_proba_distribution(action_space, use_sde=use_sde, dist_kwargs=dist_kwargs)
 
         self._build(lr_schedule)
+        """
+        # class函数命名以下划线开始的不同规则
+        class MyClass:
+            def public_method(self):      # 公有方法：用户可以调用
+                pass
+            
+            def _protected_method(self):  # 保护方法：内部使用，不建议用户调用
+                pass
+            
+            def __private_method(self):   # 私有方法：类内部使用
+                pass
+        """
 
     def _get_constructor_parameters(self) -> dict[str, Any]:
         data = super()._get_constructor_parameters()

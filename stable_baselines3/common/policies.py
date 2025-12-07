@@ -768,6 +768,9 @@ class ActorCriticPolicy(BasePolicy):
         features = self.extract_features(obs)
         if self.share_features_extractor:
             latent_pi, latent_vf = self.mlp_extractor(features)
+                # self.mlp_extractor()在调用self._build()时，内部就已经初始化实例了
+                # 在PyTorch中，nn.Module 类定义了 __call__ 方法，将self.forward()包装在__call__ 方法中，给实例输入，而不明确调用其他方法，就是默认调用self.forward()
+                # 即self.mlp_extractor(features) 与 self.mlp_extractor.forward(features)等价
         else:
             pi_features, vf_features = features
             latent_pi = self.mlp_extractor.forward_actor(pi_features)

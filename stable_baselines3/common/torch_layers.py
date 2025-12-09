@@ -195,6 +195,8 @@ class MlpExtractor(nn.Module):
     Constructs an MLP that receives the output from a previous features extractor (i.e. a CNN) or directly
     the observations (if no features extractor is applied) as an input and outputs a latent representation
     for the policy and a value network.
+        # 构建一个多层感知机（MLP），它接收来自先前特征提取器（例如CNN）的输出，或者直接接收观测数据（如果没有应用特征提取器）作为输入，
+        # 并输出策略网络和价值网络的潜在表示。
 
     The ``net_arch`` parameter allows to specify the amount and size of the hidden layers.
     It can be in either of the following forms:

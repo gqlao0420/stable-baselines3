@@ -526,7 +526,7 @@ class ActorCriticPolicy(BasePolicy):
         self.ortho_init = ortho_init
 
         self.share_features_extractor = share_features_extractor
-        self.features_extractor = self.make_features_extractor() # 定义特征提取器，假定命名 - A
+        self.features_extractor = self.make_features_extractor() # 实例化特征提取器，假定命名 - A
             # 定义特征提取器
         self.features_dim = self.features_extractor.features_dim
         if self.share_features_extractor:

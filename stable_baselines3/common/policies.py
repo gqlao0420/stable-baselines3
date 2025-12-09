@@ -628,9 +628,12 @@ class ActorCriticPolicy(BasePolicy):
             lr_schedule(1) is the initial learning rate
         """
         self._build_mlp_extractor()
+            # 实例化MLP多层感知机
 
         latent_dim_pi = self.mlp_extractor.latent_dim_pi
-
+            # 提取MLP多层感知机 - pi输出维度，作为action_net的输入维度
+        
+            # 根据action类型，定义不同的action_net
         if isinstance(self.action_dist, DiagGaussianDistribution):
             self.action_net, self.log_std = self.action_dist.proba_distribution_net(
                 latent_dim=latent_dim_pi, log_std_init=self.log_std_init
@@ -645,6 +648,7 @@ class ActorCriticPolicy(BasePolicy):
             raise NotImplementedError(f"Unsupported distribution '{self.action_dist}'.")
 
         self.value_net = nn.Linear(self.mlp_extractor.latent_dim_vf, 1)
+            # 提取MLP多层感知机 - value输出维度，作为value_net的输入维度，输出维度只有1
         # Init weights: use orthogonal initialization
         # with small initial weight for the output
         if self.ortho_init:

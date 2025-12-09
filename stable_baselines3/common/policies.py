@@ -682,13 +682,14 @@ class ActorCriticPolicy(BasePolicy):
         # Preprocess the observation if needed
         features = self.extract_features(obs)
             # self.extract_features(obs) - 从自身class中定义的方法中调用
-            # 这是在对数据进行特征提取
+            # 这是在对数据进行特征提取，返回值：pi_features, vf_features，是一个元组数据
         if self.share_features_extractor:
             latent_pi, latent_vf = self.mlp_extractor(features)
                 # self.mlp_extractor(features) - 根据__call()__规则，直接调用了forward()函数，返回 动作 - self.policy_net(features) 和 价值 - self.value_net(features)
                 # self.mlp_extractor(features) - 穿透至torch_layers.py文件中的class MlpExtractor(nn.Module)
         else:
-            pi_features, vf_features = features
+            pi_features, vf_features = features 
+                # 解包元组数据
             latent_pi = self.mlp_extractor.forward_actor(pi_features)
             latent_vf = self.mlp_extractor.forward_critic(vf_features)
         # Evaluate the values for the given observations

@@ -527,6 +527,7 @@ class ActorCriticPolicy(BasePolicy):
 
         self.share_features_extractor = share_features_extractor
         self.features_extractor = self.make_features_extractor() # 定义特征提取器，假定命名 - A
+            # 定义特征提取器
         self.features_dim = self.features_extractor.features_dim
         if self.share_features_extractor:
             # Actor与Critic公用一个特征提取器(网络)

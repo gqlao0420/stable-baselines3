@@ -681,8 +681,12 @@ class ActorCriticPolicy(BasePolicy):
         """
         # Preprocess the observation if needed
         features = self.extract_features(obs)
+            # self.extract_features(obs) - 从自身class中定义的方法中调用
+            # 这是在对数据进行特征提取
         if self.share_features_extractor:
             latent_pi, latent_vf = self.mlp_extractor(features)
+                # self.mlp_extractor(features) - 根据__call()__规则，直接调用了forward()函数，返回 动作 - self.policy_net(features) 和 价值 - self.value_net(features)
+                # self.mlp_extractor(features) - 穿透至torch_layers.py文件中的class MlpExtractor(nn.Module)
         else:
             pi_features, vf_features = features
             latent_pi = self.mlp_extractor.forward_actor(pi_features)
@@ -709,6 +713,7 @@ class ActorCriticPolicy(BasePolicy):
         """
         if self.share_features_extractor:
             return super().extract_features(obs, self.features_extractor if features_extractor is None else features_extractor)
+                # super().extract_features() - 从父类class中调用定义的方法
         else:
             if features_extractor is not None:
                 warnings.warn(

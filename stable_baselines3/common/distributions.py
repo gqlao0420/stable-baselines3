@@ -665,6 +665,7 @@ def make_proba_distribution(
 ) -> Distribution:
     """
         # 函数作用：这是一个工厂函数，根据 Gym 动作空间的类型创建对应的概率分布对象，实现了动作空间类型与分布类型的解耦
+        # make_proba_distribution() 返回的是 Distribution 基类的不同子类的实例
     Return an instance of Distribution for the correct type of action space
 
     :param action_space: the input action space

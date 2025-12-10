@@ -664,6 +664,7 @@ def make_proba_distribution(
     action_space: spaces.Space, use_sde: bool = False, dist_kwargs: Optional[dict[str, Any]] = None
 ) -> Distribution:
     """
+        # 函数作用：这是一个工厂函数，根据 Gym 动作空间的类型创建对应的概率分布对象，实现了动作空间类型与分布类型的解耦
     Return an instance of Distribution for the correct type of action space
 
     :param action_space: the input action space
@@ -674,15 +675,30 @@ def make_proba_distribution(
     """
     if dist_kwargs is None:
         dist_kwargs = {}
-
+        # 核心逻辑：基于动作空间类型分发
     if isinstance(action_space, spaces.Box):
+            # 连续动作空间（Box）
         cls = StateDependentNoiseDistribution if use_sde else DiagGaussianDistribution
-        return cls(get_action_dim(action_space), **dist_kwargs)
+            # use_sde=True: StateDependentNoiseDistribution (SAC风格) —— SAC (默认)
+            # use_sde=False: DiagGaussianDistribution (标准高斯) —— PPO, A2C, DDPG, TD3
+        return cls(get_action_dim(action_space), **dist_kwargs) # 维度计算：get_action_dim(action_space) 处理多维连续动作
     elif isinstance(action_space, spaces.Discrete):
+            # 离散动作空间（Discrete）
+            # 参数：动作数量 action_space.n
+            # 特点：单维、互斥的离散动作
+            # 示例：Atari 游戏中的 {上, 下, 左, 右, 开火}
         return CategoricalDistribution(int(action_space.n), **dist_kwargs)
     elif isinstance(action_space, spaces.MultiDiscrete):
+            # 多维离散动作空间（MultiDiscrete）
+            # 参数：每维的动作数量列表 list(action_space.nvec)
+            # 特点：多个独立的分类分布
+            # 示例：RTS 游戏中的 [移动方向(4), 攻击目标(10), 技能选择(5)]
         return MultiCategoricalDistribution(list(action_space.nvec), **dist_kwargs)
     elif isinstance(action_space, spaces.MultiBinary):
+            # 多维二进制动作空间（MultiBinary）
+            # 限制：只支持一维的 MultiBinary (如 MultiBinary(5))
+            # 处理：每个维度独立的伯努利分布
+            # 示例：5个独立的开关 [0, 1, 1, 0, 1]
         assert isinstance(
             action_space.n, int
         ), f"Multi-dimensional MultiBinary({action_space.n}) action space is not supported. You can flatten it instead."

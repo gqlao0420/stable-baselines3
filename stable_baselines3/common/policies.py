@@ -629,7 +629,7 @@ class ActorCriticPolicy(BasePolicy):
             lr_schedule(1) is the initial learning rate
         """
         self._build_mlp_extractor()
-            # 实例化MLP多层感知机
+            # 返回MlpExtractor基类的实例
 
         latent_dim_pi = self.mlp_extractor.latent_dim_pi
             # 提取MLP多层感知机 - pi输出维度，作为action_net的输入维度

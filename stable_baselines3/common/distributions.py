@@ -146,8 +146,18 @@ class DiagGaussianDistribution(Distribution):
         :return:
         """
         mean_actions = nn.Linear(latent_dim, self.action_dim)
+            # 均值网络：nn.Linear(latent_dim, self.action_dim)
+            # 输入：潜在特征 latent_dim
+            # 输出：动作均值向量 self.action_dim
+            # 可学习参数：权重矩阵 W ∈ ℝ^(latent_dim×action_dim)，偏置 b ∈ ℝ^action_dim
+        
         # TODO: allow action dependent std
         log_std = nn.Parameter(th.ones(self.action_dim) * log_std_init, requires_grad=True)
+            # 对数标准差参数：nn.Parameter（独立参数，不是网络层）
+            # 独立参数：不是网络层输出，而是独立的可学习参数
+            # 形状：(action_dim,)，每个动作维度有自己的标准差
+            # 初始值：log_std_init（通常为 0.0，对应标准差为 1.0）
+
         return mean_actions, log_std
 
     def proba_distribution(

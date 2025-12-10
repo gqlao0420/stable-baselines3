@@ -681,7 +681,8 @@ def make_proba_distribution(
         cls = StateDependentNoiseDistribution if use_sde else DiagGaussianDistribution
             # use_sde=True: StateDependentNoiseDistribution (SAC风格) —— SAC (默认)
             # use_sde=False: DiagGaussianDistribution (标准高斯) —— PPO, A2C, DDPG, TD3
-        return cls(get_action_dim(action_space), **dist_kwargs) # 维度计算：get_action_dim(action_space) 处理多维连续动作
+        return cls(get_action_dim(action_space), **dist_kwargs) 
+            # 维度计算：辅助函数 get_action_dim(action_space)，可以根据action_space的不同类型，采用不同算法返回动作空间的维度
     elif isinstance(action_space, spaces.Discrete):
             # 离散动作空间（Discrete）
             # 参数：动作数量 action_space.n

@@ -669,7 +669,7 @@ class TanhBijector:
         # Squash correction (from original SAC implementation)
         return th.log(1.0 - th.tanh(x) ** 2 + self.epsilon)
 
-
+# make_proba_distribution函数，根据action_space的类型，返回不同的分布类的实例
 def make_proba_distribution(
     action_space: spaces.Space, use_sde: bool = False, dist_kwargs: Optional[dict[str, Any]] = None
 ) -> Distribution:

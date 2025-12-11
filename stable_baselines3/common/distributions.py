@@ -125,8 +125,12 @@ def sum_independent_dims(tensor: th.Tensor) -> th.Tensor:
 class DiagGaussianDistribution(Distribution):
     """
     Gaussian distribution with diagonal covariance matrix, for continuous actions.
+        # 具有对角协方差矩阵的高斯分布，适用于连续动作。
+        # covariance matrix → 协方差矩阵（统计学标准译法）
+        # continuous actions → 连续动作（强化学习标准术语）
 
     :param action_dim:  Dimension of the action space.
+        # 动作空间的维度
     """
 
     def __init__(self, action_dim: int):

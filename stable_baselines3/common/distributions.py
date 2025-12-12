@@ -196,6 +196,11 @@ class DiagGaussianDistribution(Distribution):
         """
         Get the log probabilities of actions according to the distribution.
         Note that you must first call the ``proba_distribution()`` method.
+            # 获取动作在该分布下的对数概率。
+            # 注意：调用此方法前需先调用 proba_distribution() 方法。
+
+            # 强调这是一个状态依赖的方法，需要先初始化分布参数
+            # 典型的延迟初始化模式：先配置参数，再执行计算
 
         :param actions:
         :return:

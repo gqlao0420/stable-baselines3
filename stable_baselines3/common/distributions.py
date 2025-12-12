@@ -181,7 +181,15 @@ class DiagGaussianDistribution(Distribution):
         :return:
         """
         action_std = th.ones_like(mean_actions) * log_std.exp()
+            # Normal是一个分布类，这样self.distribution就被实例化了，self.distribution.log_prob/.entropy/.mean/等，
+            # 访问的既不是父类DiagGaussianDistribution也不是子类Distribution中的方法，而是Normal类中的方法啦！！！！！
         self.distribution = Normal(mean_actions, action_std)
+            # self.distribution 是实例属性，在父类 Distribution.__init__() 中初始化
+            # 子类直接通过 self.distribution 访问，这是 Python 的标准做法
+            # 使用 super() 只适用于调用父类的方法，如 super().__init__()
+            
+            # return self - 这是「返回类型自引用」语法，结合了链式调用设计模式，
+            # 可以理解这是一个__init__()函数，返回一个初始化(mean, std)的实例，就可以调用实例中的其他方法
         return self
 
     def log_prob(self, actions: th.Tensor) -> th.Tensor:
@@ -191,6 +199,12 @@ class DiagGaussianDistribution(Distribution):
 
         :param actions:
         :return:
+            # self.distribution 在父类 Distribution.__init__() 中定义，初始化为 None
+            # 延迟初始化：实际创建发生在 proba_distribution() 方法中
+            # 状态依赖：某些方法要求先调用初始化方法
+            # 设计优势：分离了类型定义和参数设置，更灵活
+            # 错误处理：方法中应检查 self.distribution 是否为 None
+            # 这种设计模式在需要运行时参数化的场景中很常见，允许同一个分布对象被不同参数重复使用。
         """
         log_prob = self.distribution.log_prob(actions)
         return sum_independent_dims(log_prob)

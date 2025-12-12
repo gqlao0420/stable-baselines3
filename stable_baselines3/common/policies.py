@@ -647,7 +647,8 @@ class ActorCriticPolicy(BasePolicy):
             self.action_net = self.action_dist.proba_distribution_net(latent_dim=latent_dim_pi)
         else:
             raise NotImplementedError(f"Unsupported distribution '{self.action_dist}'.")
-
+            
+            # 定义value_net
         self.value_net = nn.Linear(self.mlp_extractor.latent_dim_vf, 1)
             # 提取MLP多层感知机 - value输出维度，作为value_net的输入维度，输出维度只有1
         # Init weights: use orthogonal initialization

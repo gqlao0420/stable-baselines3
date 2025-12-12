@@ -111,9 +111,19 @@ def sum_independent_dims(tensor: th.Tensor) -> th.Tensor:
     """
     Continuous actions are usually considered to be independent,
     so we can sum components of the ``log_prob`` or the entropy.
+        # 连续动作通常被认为是独立的，
+        # 因此我们可以对 ``log_prob`` 或熵的分量进行求和。
 
     :param tensor: shape: (n_batch, n_actions) or (n_batch,)
     :return: shape: (n_batch,) for (n_batch, n_actions) input, scalar for (n_batch,) input
+
+        # 逻辑：检查张量维度，>1维时在dim=1求和，否则直接求和
+        # 目的：处理连续动作空间中独立维度的概率计算
+        # 数学原理：基于独立随机变量的联合概率 = 边缘概率乘积 → 对数概率求和
+        # 设计价值：提供统一的接口，处理不同形状的输入
+        # 函数体现了 Stable-Baselines3 的优秀设计：数学严谨性 + 工程实用性的完美结合
+
+    
     """
     if len(tensor.shape) > 1:
         tensor = tensor.sum(dim=1)

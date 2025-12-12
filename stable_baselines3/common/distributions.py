@@ -144,11 +144,17 @@ class DiagGaussianDistribution(Distribution):
         Create the layers and parameter that represent the distribution:
         one output will be the mean of the Gaussian, the other parameter will be the
         standard deviation (log std in fact to allow negative values)
+            # 创建表示概率分布的神经网络层和参数：
+            # 一个输出端对应高斯分布的均值向量，另一个参数为对数标准差（通过对数变换确保标准差为正且优化稳定）。
+                # 确保标准差始终为正：std = exp(log_std) > 0
+                # 优化更稳定：对数变换使参数空间更平滑
+                # 数值稳定性：避免除零和负值问题
 
         :param latent_dim: Dimension of the last layer of the policy (before the action layer)
         :param log_std_init: Initial value for the log standard deviation
         :return:
         """
+            # 创建的是层对象，不是计算结果；需要前向传播才能得到实际均值
         mean_actions = nn.Linear(latent_dim, self.action_dim)
             # 均值网络：nn.Linear(latent_dim, self.action_dim)
             # 输入：潜在特征 latent_dim

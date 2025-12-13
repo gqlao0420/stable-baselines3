@@ -601,6 +601,12 @@ class RolloutBuffer(BaseBuffer):
             ]
 
             for tensor in _tensor_names:
+                    # self.__dict__ 是 Python 对象的内部字典，存储了对象的所有实例属性
+                    # DRY原则：避免重复代码
+                    # 易于扩展：只需修改列表，无需添加新行
+                    # 减少错误：确保所有属性以相同方式处理
+                    # 代码清晰：明确显示哪些属性需要相同处理
+                    # 新增属性：可以通过self.来访问属性
                 self.__dict__[tensor] = self.swap_and_flatten(self.__dict__[tensor])
             self.generator_ready = True
 

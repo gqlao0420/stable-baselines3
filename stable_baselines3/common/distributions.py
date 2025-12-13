@@ -191,6 +191,14 @@ class DiagGaussianDistribution(Distribution):
         :return:
         """
         action_std = th.ones_like(mean_actions) * log_std.exp()
+            # th.ones_like(mean_actions) - 创建与 mean_actions 形状相同的全1张量
+            # log_std.exp() - 因为log_std是对数标准差，这个是将对数标准差转化为标准差
+            # *：逐元素乘法，将标准差广播到正确形状
+
+            # π(a|s) = N(μ(s), Σ(s))
+            # 其中 Σ(s) = diag(σ₁², σ₂², ..., σₙ²)
+            # 代码实现的就是 σ(s) = exp(log_std) 的广播操作
+            
             # Normal是一个分布类，这样self.distribution就被实例化了，self.distribution.log_prob/.entropy/.mean/等，
             # 访问的既不是父类DiagGaussianDistribution也不是子类Distribution中的方法，而是Normal类中的方法啦！！！！！
         self.distribution = Normal(mean_actions, action_std)

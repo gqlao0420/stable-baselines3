@@ -343,24 +343,37 @@ class ReplayBuffer(BaseBuffer):
 class RolloutBuffer(BaseBuffer):
     """
     Rollout buffer used in on-policy algorithms like A2C/PPO.
-    It corresponds to ``buffer_size`` transitions collected
+        # 用于 A2C/PPO 等在线策略算法的经验回放缓冲区。
+    It corresponds to ``buffer_size`` transitions collected    
     using the current policy.
+        # 它对应使用当前策略收集的 buffer_size 个转移样本。
     This experience will be discarded after the policy update.
+        # 这些经验将在策略更新后被丢弃
     In order to use PPO objective, we also store the current value of each state
     and the log probability of each taken action.
+        # 为了使用 PPO 目标函数，我们还存储每个状态当前的价值估计值以及每个已执行动作的对数概率。
 
     The term rollout here refers to the model-free notion and should not
     be used with the concept of rollout used in model-based RL or planning.
+        # 此处的 "rollout" 指的是"不基于模型的强化学习"中的概念，不应与"基于模型的强化学习"或规划中使用的 rollout 概念混淆。
     Hence, it is only involved in policy and value function training but not action selection.
+        # 因此，它仅参与策略和价值函数训练，而不参与动作选择。
 
     :param buffer_size: Max number of element in the buffer
+        # 缓冲区中的最大样本数量
     :param observation_space: Observation space
+        # 观测空间
     :param action_space: Action space
+        # 动作空间
     :param device: PyTorch device
     :param gae_lambda: Factor for trade-off of bias vs variance for Generalized Advantage Estimator
         Equivalent to classic advantage when set to 1.
+        # 广义优势估计器中偏差与方差权衡的因子，设置为 1 时等价于经典优势函数
     :param gamma: Discount factor
+        # 折扣因子
     :param n_envs: Number of parallel environments
+        # 并行环境数量
+    :param episode_starts: 
     """
 
     observations: np.ndarray
@@ -451,6 +464,7 @@ class RolloutBuffer(BaseBuffer):
         :param action: Action
         :param reward:
         :param episode_start: Start of episode signal.
+            # episode_start 是一个布尔标志数组，标记每个时间步是否是一个新回合的开始
         :param value: estimated value of the current state
             following the current policy.
         :param log_prob: log probability of the action

@@ -612,12 +612,19 @@ class RolloutBuffer(BaseBuffer):
 
         # Return everything, don't create minibatches
         if batch_size is None:
+                # 也就是说，batch_size等于这个buffer中所有样本数，一次性加载所有数据！
             batch_size = self.buffer_size * self.n_envs
 
         start_idx = 0
         while start_idx < self.buffer_size * self.n_envs:
             yield self._get_samples(indices[start_idx : start_idx + batch_size])
             start_idx += batch_size
+                # yield 是 Python 中「生成器」的核心关键字！
+                # yield 是 Python 中实现「惰性计算」和「流式处理」的核心机制，在需要处理大量数据的场景（如深度学习、强化学习）中特别有价值！
+                # 关键特性：
+                # 暂停执行：遇到 yield 时，函数暂停并返回值
+                # 保持状态：函数的状态（局部变量、指令指针）被保存
+                # 恢复执行：下次调用时从上次暂停的地方继续
 
     def _get_samples(
         self,

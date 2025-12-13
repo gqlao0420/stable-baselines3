@@ -66,6 +66,27 @@ class BaseBuffer(ABC):
         to convert shape from [n_steps, n_envs, ...] (when ... is the shape of the features)
         to [n_steps * n_envs, ...] (which maintain the order)
 
+            # Swap and flatten → "交换并展平"（准确描述操作顺序）
+            # axes 0 (buffer_size) → "第0轴（buffer_size）"（保持技术参数名）
+            # n_steps, n_envs → 保持原样或译为"时间步数、环境数"
+            # maintain the order → "保持原始顺序"（强调数据顺序不变）
+
+            # 原始数据组织方式：
+            # 维度0: buffer_size/n_steps (时间步数)
+            # 维度1: n_envs (并行环境数量)  
+            # 维度2+: 观测/动作特征维度
+            
+            # 技术操作详解：
+            # 元数据的维度：[buffer_size, n_envs, features_dim]
+            # arr.swapaxes(0, 1) - 交换轴：将第0轴（时间步）和第1轴（环境）互换位置 -> [n_envs， buffer_size, features_dim]
+            # .reshape(n_envs * buffer_size, features_dim) - 展平：将前两个维度合并为一个维度 -> [n_envs * buffer_size, features_dim]
+            # 形状转换：从三维/高维数组变为二维数组
+            
+            # 变换目的：
+            # 1. 将多环境多步骤数据合并为单一批次
+            # 2. 保持每个环境的连续时间步数据在一起
+            # 3. 便于批量输入神经网络
+
         :param arr:
         :return:
         """

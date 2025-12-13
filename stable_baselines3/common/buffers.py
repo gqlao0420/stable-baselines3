@@ -430,7 +430,33 @@ class RolloutBuffer(BaseBuffer):
         For more information, see discussion in https://github.com/DLR-RM/stable-baselines3/pull/375.
 
         :param last_values: state value estimation for the last step (one for each env)
+            # 当前buffer最后一个状态的价值估计，但不一定是episode回合终止，(缓冲区最后一个时间步之后的状态价值估计)
+            # 每次塞进buffer的数据，可能有多个episode回合，这时候就需要用episode_starts来标记哪个是episode的终止状态啦
         :param dones: if the last step was a terminal step (one bool for each env).
+            # 
+
+            # 逻辑讲解：
+            # last_values 是 GAE 计算中至关重要的一个参数，是缓冲区最后一个时间步之后的状态价值估计，但在缓冲区中并不存在！
+            # 原因：
+            # 1.问题：缓冲区截断 —— 在on-policy算法中，我们收集固定长度的数据（如 2048 步），但这不一定对应完整的回合
+                    # 示例：缓冲区只收集了部分回合
+                    缓冲区时间步: 0    1    2    3    4    5    6    7
+                    实际回合:     E1S  E1M  E1M  E1M  E1M  E1M  E1M  E1M
+                                            ↑
+                                    回合在这里还没有结束！
+                    
+                    # 计算最后一步（步7）的优势时：
+                    # 需要知道步8的价值 V(s_8) 来计算 TD 残差
+                    # 但步8不在缓冲区中！
+                    # 所以需要外部提供这个值 → last_values
+            # 2.数学原因：TD 目标计算
+                    # TD 残差公式：δ_t = r_t + γ * V(s_{t+1}) - V(s_t)
+                    # 对于最后一步 t = T-1：
+                    # 需要 V(s_T) 来计算 δ_{T-1}
+                    # 但 s_T 不在缓冲区中
+                    # 所以需要传入 last_values = V(s_T)
+
+            
         """
         # Convert to numpy
         last_values = last_values.clone().cpu().numpy().flatten()  # type: ignore[assignment]
@@ -442,7 +468,9 @@ class RolloutBuffer(BaseBuffer):
                 next_values = last_values
             else:
                 next_non_terminal = 1.0 - self.episode_starts[step + 1]
+                    # 指示下一个状态是否非终止（通常是 1 - dones[t]）
                 next_values = self.values[step + 1]
+                    # 下一个状态的价值估计
             delta = self.rewards[step] + self.gamma * next_values * next_non_terminal - self.values[step]
             last_gae_lam = delta + self.gamma * self.gae_lambda * next_non_terminal * last_gae_lam
             self.advantages[step] = last_gae_lam

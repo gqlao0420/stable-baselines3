@@ -776,6 +776,9 @@ class ActorCriticPolicy(BasePolicy):
         :param actions: Actions
         :return: estimated value, log likelihood of taking those actions
             and entropy of the action distribution.
+            # estimated value - 通常指状态价值函数 V(s) 或状态-动作价值函数 Q(s,a) 的估计，也可理解为回报的期望值
+            # log likelihood of taking those actions - 动作的对数概率：log π(a|s)
+            # entropy of the action distribution - 动作分布的熵，在最大熵强化学习中作为正则化项使用
         """
         # Preprocess the observation if needed
         features = self.extract_features(obs)

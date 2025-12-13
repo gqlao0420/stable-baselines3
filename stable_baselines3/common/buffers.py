@@ -507,8 +507,20 @@ class RolloutBuffer(BaseBuffer):
             delta = self.rewards[step] + self.gamma * next_values * next_non_terminal - self.values[step]
             last_gae_lam = delta + self.gamma * self.gae_lambda * next_non_terminal * last_gae_lam
             self.advantages[step] = last_gae_lam
+            
         # TD(lambda) estimator, see Github PR #375 or "Telescoping in TD(lambda)"
         # in David Silver Lecture 4: https://www.youtube.com/watch?v=PnHCvfgC_ZA
+        # 数学关系：
+            # A(s,a) = Q(s,a) - V(s)      # (1) 优势定义
+            # Q(s,a) = A(s,a) + V(s)      # (2) 由(1)推导
+            # 在蒙特卡洛估计中：
+            # 回报 G_t 是 Q(s_t, a_t) 的无偏估计
+            # G_t ≈ Q(s_t, a_t)          # (3) 回报估计动作价值
+            # 结合(2)和(3)：
+            # G_t ≈ A(s_t, a_t) + V(s_t)  # (4) 核心等式！
+            # 这正是代码中的逻辑：
+            # self.returns = self.advantages + self.values
+            # 简单的加法等式实际上封装了强化学习价值估计的核心思想：将绝对回报分解为基线价值（期望表现）和相对优势（意外惊喜）。这种分解使得策略梯度更加稳定有效。
         self.returns = self.advantages + self.values
 
     def add(

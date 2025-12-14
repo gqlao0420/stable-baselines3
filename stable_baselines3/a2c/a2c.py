@@ -293,11 +293,23 @@ class A2C(OnPolicyAlgorithm):
 
             # Optimization step
             self.policy.optimizer.zero_grad()
+                # 作用：将模型中所有参数的梯度缓冲区清零
+                # 原因：PyTorch的梯度是累加的。如果不清零，新计算的梯度会加到旧的梯度上，导致梯度爆炸和不正确的更新
             loss.backward()
+                # 作用：自动微分，计算损失函数对模型所有可训练参数的梯度
+                # 反向传播的数学原理：
+                # 1. 从loss开始，沿着计算图向后传播
+                # 2. 对每个参数计算 ∂loss/∂param
+                # 3. 将每个参数的梯度存储在 param.grad 属性中
 
             # Clip grad norm
             th.nn.utils.clip_grad_norm_(self.policy.parameters(), self.max_grad_norm)
+                # 作用：梯度裁剪，防止梯度爆炸
+                # 算法原理：
+                # 1. 计算所有参数的梯度向量的L2范数（欧几里得长度）
+                # 2. 如果范数 > max_grad_norm，将所有梯度按比例缩放
             self.policy.optimizer.step()
+                # 作用：根据计算出的梯度更新模型参数
 
         explained_var = explained_variance(self.rollout_buffer.values.flatten(), self.rollout_buffer.returns.flatten())
 

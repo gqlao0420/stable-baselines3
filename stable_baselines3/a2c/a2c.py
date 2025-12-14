@@ -199,10 +199,31 @@ class A2C(OnPolicyAlgorithm):
 
             # Policy gradient loss
             policy_loss = -(advantages * log_prob).mean()
+                #                         梯度流向分析:
+                # ============================================================
+                # 策略网络（Actor）梯度:
+                #   policy_loss = -(advantages * log_prob).mean()
+                #   ∇policy_loss = -advantages * ∇log_prob / n
+                #   梯度流向: log_prob → 策略网络参数
+                #   优化方向:
+                #     - advantages > 0: 增加该动作的概率
+                #     - advantages < 0: 减少该动作的概率
 
             # Value loss using the TD(gae_lambda) target
             value_loss = F.mse_loss(rollout_data.returns, values)
-
+                #                         梯度流向分析:
+                # ============================================================
+                # 价值网络（Critic）梯度:
+                #   value_loss = MSE(returns, values)
+                #   ∇value_loss = 2*(values - returns) * ∇values / n
+                #   梯度流向: values → 价值网络参数
+                #   优化方向: 使 values 接近 returns
+            
+                # 整体优化目标:
+                #   1. Actor: 选择高优势的动作
+                #   2. Critic: 准确预测状态价值
+                #   3. 两者协同: Critic为Actor提供准确的优势估计
+            
             # Entropy loss favor exploration
             if entropy is None:
                 # Approximate entropy when no analytical form

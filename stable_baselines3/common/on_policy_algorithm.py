@@ -372,6 +372,7 @@ class OnPolicyAlgorithm(BaseAlgorithm):
                 assert self.ep_info_buffer is not None
                 self.dump_logs(iteration)
 
+                # learn()调用train()
             self.train()
 
         callback.on_training_end()

@@ -112,6 +112,9 @@ class A2C(OnPolicyAlgorithm):
     # 事件: 开始更新 → 计算损失 → 反向传播 → 参数更新 → 结束
     # 调用: train()     forward()   backward()   optimizer.step()
 
+    # 调用关系：
+    # 在class OnPolicyAlgorithm的learn()中，调用了train()，即self.train()
+
     # 关系图
         ┌─────────────────────────────────────────┐
         │            learn() 函数                  │

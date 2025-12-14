@@ -232,6 +232,64 @@ class A2C(OnPolicyAlgorithm):
                 entropy_loss = -th.mean(entropy)
 
             loss = policy_loss + self.ent_coef * entropy_loss + self.vf_coef * value_loss
+                # 这里policy_loss和entropy_loss涉及到policy_net，两者在梯度前向传播和反向传播时，是有所区别的。
+                # 它们更新的是完全相同的参数集，但通过不同的梯度方向进行更新。
+                # 梯度流可视化：
+                    # 策略网络参数 θ = {θ_feature, θ_mean, θ_log_std}
+    
+                    # 正向传播：
+                    #     特征 h = f(obs; θ_feature)
+                    #     均值 μ = g_mean(h; θ_mean)
+                    #     对数标准差 log_std = g_std(h; θ_log_std)
+                    #     标准差 σ = exp(log_std)
+                    
+                    # 计算：
+                    #     log_prob = -0.5*((a-μ)/σ)² - log_std - 0.5*log(2π)
+                    #     entropy = 0.5 + log(√(2π)) + log_std
+                    
+                    # 反向传播：
+                    # 对于 log_prob 的梯度：
+                    #     ∇_θ log_prob = 
+                    #         [∂log_prob/∂μ] * [∂μ/∂θ] +               ← 通过 μ 的路径
+                    #         [∂log_prob/∂σ] * [∂σ/∂log_std] * [∂log_std/∂θ]   ← 通过 σ 的路径
+                            
+                    #     其中：
+                    #         ∂log_prob/∂μ = (a-μ)/σ²
+                    #         ∂log_prob/∂σ = ((a-μ)²/σ³) - (1/σ)
+                    #         ∂σ/∂log_std = σ = exp(log_std)
+                            
+                    #     简化后：
+                    #         ∂log_prob/∂log_std = ((a-μ)²/σ² - 1)  ← 注意这个简化！
+                                    # 代入 σ = exp(log_std)：
+                                    # log_prob = -0.5*(a-μ)² * exp(-2*log_std) - log_std - 0.5*log(2π)
+                                    # 直接对 log_std 求导：
+                                    # ∂log_prob/∂log_std = (a-μ)² * exp(-2*log_std) - 1
+                                    #                    = (a-μ)²/σ² - 1
+                                    # 这与链式法则结果一致：
+                                    # ∂log_prob/∂log_std = ∂log_prob/∂σ * ∂σ/∂log_std
+                                    #                    = [((a-μ)²/σ³ - 1/σ)] * σ
+                                    #                    = (a-μ)²/σ² - 1
+                    # 对于 entropy 的梯度：
+                    #     ∇_θ entropy = 
+                    #         [∂entropy/∂log_std] * [∂log_std/∂θ]   ← 直接路径
+
+                    # 
+                    # 初始策略分布：
+                    #     π(a|s) ~ N(μ, σ)  # 有一定随机性
+                    
+                    # 策略损失的作用：
+                    #     A>0的动作：概率密度↑
+                    #     A<0的动作：概率密度↓
+                    #     结果：分布变尖峰 → 确定性↑ → 熵↓
+                    
+                    # 熵损失的作用：
+                    #     增加 σ → 分布变平坦 → 随机性↑ → 熵↑
+                    # 更新参数：
+                    #     shared.weight: 两种损失都有梯度
+                    #     shared.bias: 两种损失都有梯度  
+                    #     mean.weight: 只有policy_loss有梯度
+                    #     mean.bias: 只有policy_loss有梯度
+                    #     log_std: 两种损失都有梯度，但方向可能不同
 
             # Optimization step
             self.policy.optimizer.zero_grad()

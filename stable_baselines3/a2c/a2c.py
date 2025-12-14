@@ -97,6 +97,46 @@ class A2C(OnPolicyAlgorithm):
         # 选择GPU或CPU进行计算
     :param _init_setup_model: Whether or not to build the network at the creation of the instance
         # 模型初始化控制参数，用于延迟或控制神经网络构建时机
+
+    # 在class A2C(OnPolicyAlgorithm)中，除了常规__init__()函数，就剩两个：
+    # train() - 执行一次梯度更新（一个训练步骤），就像“上课 + 做作业 + 考试（完整过程）”
+    # learn() - 完整的训练循环（与环境交互 + 多次调用 train()），就像只是“做作业”这个环节
+
+    # learn()的时间线
+    # 时间: t0 ──────────── t1 ──────────── t2 ──────────── t3 ──────────── t_end
+    # 事件: 开始训练 → 收集n_steps数据 → train()更新 → 收集数据 → train()更新 → ... → 训练完成
+    # 调用: learn()    collect_rollouts()  train()     collect_rollouts()  train()
+
+    # train()的时间线
+    # 时间: t0 ──────────── t1
+    # 事件: 开始更新 → 计算损失 → 反向传播 → 参数更新 → 结束
+    # 调用: train()     forward()   backward()   optimizer.step()
+
+    # 关系图
+        ┌─────────────────────────────────────────┐
+        │            learn() 函数                  │
+        │   (完整的训练循环，用户直接调用)             │
+        └────────────────┬────────────────────────┘
+                         │
+        ┌────────────────▼────────────────────────┐
+        │  while num_timesteps < total_timesteps: │
+        │  1. collect_rollouts()   # 收集数据       │
+        │  2. train()              # 参数更新       │◄─┐
+        │  3. log()                # 记录日志       │  │
+        │  4. callback()           # 回调函数       │  │
+        └─────────────────────────────────────────┘   │
+                         │                            │
+        ┌────────────────▼────────────────────────┐   │
+        │            train() 函数                  │   │
+        │   (单次梯度更新，被learn()内部调用)          │──┘
+        │                                         │
+        │  1. 从buffer获取数据                      │
+        │  2. 计算policy_loss, value_loss,         │
+        │     entropy_loss                        │
+        │  3. loss.backward()                     │
+        │  4. optimizer.step()                    │
+        └─────────────────────────────────────────┘
+            
     """
 
     policy_aliases: ClassVar[dict[str, type[BasePolicy]]] = {

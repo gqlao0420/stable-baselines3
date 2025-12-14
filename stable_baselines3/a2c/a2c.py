@@ -169,6 +169,7 @@ class A2C(OnPolicyAlgorithm):
             self.policy_kwargs["optimizer_kwargs"] = dict(alpha=0.99, eps=rms_prop_eps, weight_decay=0)
 
         if _init_setup_model:
+                # 这里直接调用继承过来的方法，请见OnPolicyAlgorithm里面，已经把强化学习的环境配置好！！！
             self._setup_model()
 
     def train(self) -> None:

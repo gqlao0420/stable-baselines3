@@ -136,7 +136,16 @@ class A2C(OnPolicyAlgorithm):
         │  3. loss.backward()                     │
         │  4. optimizer.step()                    │
         └─────────────────────────────────────────┘
-            
+    # 使用建议：
+        # 普通用户：
+            # 总是使用 learn()，不要碰 train()
+        # 研究人员：
+            # 使用 learn() 进行标准训练
+            # 只在需要分析训练过程时查看 train() 的实现
+            # 可以通过回调函数监控训练，而不是修改 train()
+        # 开发者：
+            # 如果要修改训练逻辑，可以继承并重写 train()
+            # 如果要修改训练循环，可以继承并重写 learn()
     """
 
     policy_aliases: ClassVar[dict[str, type[BasePolicy]]] = {

@@ -500,6 +500,13 @@ class RolloutBuffer(BaseBuffer):
         if batch_size is None:
             batch_size = self.buffer_size * self.n_envs
 
+        # Yeild语法规则
+            # 强化学习常用 经验回放缓冲区（Replay Buffer） 的采样方法
+            # 按批次（batch）逐个返回样本，而不是一次性返回所有数据。
+            # yield 用于定义一个 生成器函数（generator function）。
+            # 调用该函数时，不会立即执行函数体，而是返回一个 生成器对象（generator object）。
+            # 每次调用 next() 或在 for 循环中迭代时，函数会从上次 yield 的位置继续执行，直到遇到下一个 yield 或函数结束，比如：
+                # 在a2c算法中，有一个for循环："for rollout_data in self.rollout_buffer.get(batch_size=None):"
         start_idx = 0
         while start_idx < self.buffer_size * self.n_envs:
             yield self._get_samples(indices[start_idx : start_idx + batch_size])

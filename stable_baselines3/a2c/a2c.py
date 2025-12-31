@@ -142,6 +142,7 @@ class A2C(OnPolicyAlgorithm):
 
         # This will only loop once (get all data in one go)
         for rollout_data in self.rollout_buffer.get(batch_size=None):
+            # 这个循环，配合self.rollout_buffer.get函数中的yeild生成器函数，按batch_size大小，逐批次返回经验数据。
             actions = rollout_data.actions
             if isinstance(self.action_space, spaces.Discrete):
                 # Convert discrete action from float to long

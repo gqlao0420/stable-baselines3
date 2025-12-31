@@ -678,12 +678,17 @@ def make_proba_distribution(
         instead of DiagGaussianDistribution
     :param dist_kwargs: Keyword arguments to pass to the probability distribution
     :return: the appropriate Distribution object
+    
+    根据传入的动作空间类型（action_space），自动选择并返回一个与之匹配的概率分布类（Distribution）的实例
+    实现策略头与动作语义对齐
     """
     if dist_kwargs is None:
         dist_kwargs = {}
 
     if isinstance(action_space, spaces.Box):
         cls = StateDependentNoiseDistribution if use_sde else DiagGaussianDistribution
+            # use_sde=True：启用 State-Dependent Exploration (SDE)，用于更高效的连续控制探索（如 PPO with SDE）
+        
         return cls(get_action_dim(action_space), **dist_kwargs)
     elif isinstance(action_space, spaces.Discrete):
         return CategoricalDistribution(int(action_space.n), **dist_kwargs)

@@ -188,11 +188,12 @@ def get_flattened_obs_dim(observation_space: spaces.Space) -> int:
 def get_action_dim(action_space: spaces.Space) -> int:
     """
     Get the dimension of the action space.
-
+    根据动作空间类型，计算并返回动作的维度：https://www.kdocs.cn/l/caeJ9Tgq2Azj?linkname=vusSZKyHg7
     :param action_space:
     :return:
     """
     if isinstance(action_space, spaces.Box):
+        # 
         return int(np.prod(action_space.shape))
     elif isinstance(action_space, spaces.Discrete):
         # Action is an int

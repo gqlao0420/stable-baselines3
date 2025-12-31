@@ -506,7 +506,7 @@ class ActorCriticPolicy(BasePolicy):
         self.share_features_extractor = share_features_extractor
             # 返回一个特征提取的class
         self.features_extractor = self.make_features_extractor()
-        self.features_dim = self.features_extractor.features_dim
+        self.features_dim = self.features_extractor.features_dim # 在BaseFeaturesExtractor基类中定义的
         if self.share_features_extractor:
                 # 策略和价值特征提取器共享一个class
             self.pi_features_extractor = self.features_extractor

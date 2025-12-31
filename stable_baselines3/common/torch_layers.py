@@ -24,7 +24,10 @@ class BaseFeaturesExtractor(nn.Module):
 
     @property
     def features_dim(self) -> int:
-        """The number of features that the extractor outputs."""
+        """
+        The number of features that the extractor outputs.
+        子类根据观测空间主动计算并传入
+        """
         return self._features_dim
 
 

@@ -34,11 +34,16 @@ class FlattenExtractor(BaseFeaturesExtractor):
     Used as a placeholder when feature extraction is not needed.
 
     :param observation_space: The observation space of the environment
+    
+    在强化学习中，智能体（Agent）需要从环境的观测值（observation） 中提取有用的特征，再输入到策略网络或价值网络中。
+        1.复杂观测：比如图像（Box(84, 84, 3)）、字典（Dict({"image": ..., "vector": ...})）等，需要专门的特征提取器（如 CNN、RNN、LSTM、多头网络等）。
+        2.简单观测：比如一维向量（Box(10,)），不需要任何复杂处理，直接“展平”即可输入后续网络。
     """
 
     def __init__(self, observation_space: gym.Space) -> None:
         super().__init__(observation_space, get_flattened_obs_dim(observation_space))
         self.flatten = nn.Flatten()
+            # nn.Flatten() - 无学习参数
 
     def forward(self, observations: th.Tensor) -> th.Tensor:
         return self.flatten(observations)

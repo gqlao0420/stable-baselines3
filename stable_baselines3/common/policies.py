@@ -692,6 +692,7 @@ class ActorCriticPolicy(BasePolicy):
         :param latent_pi: Latent code for the actor
         :return: Action distribution
 
+            # Distribution初始化的子类，都会具备以下方法可以调用
             class Distribution:
                 def sample(self) -> Tensor:              # 从分布中采样动作
                 def log_prob(self, actions) -> Tensor:   # 计算动作的对数概率
@@ -745,9 +746,17 @@ class ActorCriticPolicy(BasePolicy):
             pi_features, vf_features = features
             latent_pi = self.mlp_extractor.forward_actor(pi_features)
             latent_vf = self.mlp_extractor.forward_critic(vf_features)
-        distribution = self._get_action_dist_from_latent(latent_pi)
+        distribution = self._get_action_dist_from_latent(latent_pi) 
+            # distribution - 返回的是根据action类型选择好的概率分布类型初始化后的子类
         log_prob = distribution.log_prob(actions)
+            # 计算策略网络对“已采样动作”/“已执行动作”（actions）的对数概率（log-likelihood）—— 这是 on-policy 算法（A2C/PPO）高效训练的关键——只关注实际走过的轨迹，而非整个动作空间。
+            # 输入：actions: 形状为 (batch_size, action_dim) 的张量
+            # 输出：log_prob: 形状为 (batch_size,) 的张量
+            # 作用：policy_loss = -(advantages * log_prob).mean()，计算策略损失
         values = self.value_net(latent_vf)
+            # 估计当前状态（或状态序列）的价值函数 V(s)
+            # 输入：latent_vf: 从特征提取器（如 CNN/MLP）得到的状态表示，形状 (batch_size, latent_dim)
+            # 输出：values: 形状 (batch_size, 1) 或 (batch_size,) 的张量
         entropy = distribution.entropy()
         return values, log_prob, entropy
 

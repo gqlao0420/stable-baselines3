@@ -691,6 +691,13 @@ class ActorCriticPolicy(BasePolicy):
 
         :param latent_pi: Latent code for the actor
         :return: Action distribution
+
+            class Distribution:
+                def sample(self) -> Tensor:              # 从分布中采样动作
+                def log_prob(self, actions) -> Tensor:   # 计算动作的对数概率
+                def entropy(self) -> Tensor:             # 计算分布的熵（用于探索）
+                def mode(self) -> Tensor:                # 返回最可能的动作（确定性策略）
+        
         """
         mean_actions = self.action_net(latent_pi)
 

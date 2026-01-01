@@ -424,7 +424,7 @@ class RolloutBuffer(BaseBuffer):
 
         last_gae_lam = 0
         for step in reversed(range(self.buffer_size)):
-                # 计算轨迹的“回报”，要遵循从后向前递推。以数轴做类比，当前时刻永远在箭头方向，计算顺序要逆着箭头反方向来，这也符合贝尔曼方程中，当前状态价值与下一状态的价值有关的理论思想。
+                # 计算轨迹的“回报”，要遵循从后向前遍历。以数轴做类比，当前时刻永远在箭头方向，计算顺序要逆着箭头反方进行遍历，这也符合贝尔曼方程中，当前状态价值与下一状态的价值有关的理论思想。
             if step == self.buffer_size - 1:
                 next_non_terminal = 1.0 - dones.astype(np.float32)
                 next_values = last_values

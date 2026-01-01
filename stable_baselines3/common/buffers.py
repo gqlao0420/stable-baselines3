@@ -424,6 +424,7 @@ class RolloutBuffer(BaseBuffer):
 
         last_gae_lam = 0
         for step in reversed(range(self.buffer_size)):
+                # 计算轨迹的“回报”，要遵循从后向前递推。以数轴做类比，当前时刻永远在箭头方向，计算顺序要逆着箭头反方向来，这也符合贝尔曼方程中，当前状态价值与下一状态的价值有关的理论思想。
             if step == self.buffer_size - 1:
                 next_non_terminal = 1.0 - dones.astype(np.float32)
                 next_values = last_values
@@ -431,7 +432,9 @@ class RolloutBuffer(BaseBuffer):
                 next_non_terminal = 1.0 - self.episode_starts[step + 1]
                 next_values = self.values[step + 1]
             delta = self.rewards[step] + self.gamma * next_values * next_non_terminal - self.values[step]
+                # 这里是TD eror理论公式的应用
             last_gae_lam = delta + self.gamma * self.gae_lambda * next_non_terminal * last_gae_lam
+                # 递推公式，计算GAE代替优势函数advantage
             self.advantages[step] = last_gae_lam
         # TD(lambda) estimator, see Github PR #375 or "Telescoping in TD(lambda)"
         # in David Silver Lecture 4: https://www.youtube.com/watch?v=PnHCvfgC_ZA

@@ -191,6 +191,8 @@ def create_mlp(
 
 class MlpExtractor(nn.Module):
     """
+    它只定义了 Actor 和 Critic 的“主干”（即共享或分离的 MLP 隐层），但并没有包含最终的“输出头”（output heads）
+    
     Constructs an MLP that receives the output from a previous features extractor (i.e. a CNN) or directly
     the observations (if no features extractor is applied) as an input and outputs a latent representation
     for the policy and a value network.

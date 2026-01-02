@@ -1,5 +1,20 @@
 """Policies: abstract base class and concrete implementations."""
 
+"""
+该文件中定义的class逻辑关系：
+nn.Module
+   │
+   └── BaseModel
+          │
+          ├── BasePolicy (ABC)
+          │      │
+          │      └── ActorCriticPolicy
+          │             ├── ActorCriticCnnPolicy           # 图像输入
+          │             └── MultiInputActorCriticPolicy    # 多输入（如 Dict）
+          │
+          └── ContinuousCritic                             # 仅用于 SAC/TD3 的 Q 网络
+"""
+
 import collections
 import copy
 import warnings

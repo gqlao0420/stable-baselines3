@@ -405,6 +405,7 @@ class BasePolicy(BaseModel, ABC):
 
     def scale_action(self, action: np.ndarray) -> np.ndarray:
         """
+        目的：解耦策略网络的输出范围与环境动作空间的实际范围
         Rescale the action from [low, high] to [-1, 1]
         (no need for symmetric action space)
 
@@ -419,6 +420,7 @@ class BasePolicy(BaseModel, ABC):
 
     def unscale_action(self, scaled_action: np.ndarray) -> np.ndarray:
         """
+        目的：解耦策略网络的输出范围与环境动作空间的实际范围
         Rescale the action from [-1, 1] to [low, high]
         (no need for symmetric action space)
 

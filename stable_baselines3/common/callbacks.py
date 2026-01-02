@@ -33,23 +33,30 @@ class BaseCallback(ABC):
     Base class for callback.
 
     :param verbose: Verbosity level: 0 for no output, 1 for info messages, 2 for debug messages
+        # 详细程度级别：0 表示无输出，1 表示显示信息消息，2 表示显示调试消息。
     """
 
     # The RL model
     # Type hint as string to avoid circular import
+    # 强化学习模型
+    # 使用字符串形式的类型提示以避免循环导入
     model: "base_class.BaseAlgorithm"
 
     def __init__(self, verbose: int = 0):
         super().__init__()
         # Number of time the callback was called
+        # 回调函数被调用的次数
         self.n_calls = 0  # type: int
         # n_envs * n times env.step() was called
+        # n_envs * n 表示 env.step() 被调用的次数
         self.num_timesteps = 0  # type: int
         self.verbose = verbose
         self.locals: dict[str, Any] = {}
         self.globals: dict[str, Any] = {}
         # Sometimes, for event callback, it is useful
         # to have access to the parent object
+        # 有时，对于事件回调来说，
+        # 能够访问父对象会很有用
         self.parent = None  # type: BaseCallback | None
 
     @property

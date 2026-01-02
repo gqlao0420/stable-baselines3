@@ -360,7 +360,9 @@ class BasePolicy(BaseModel, ABC):
             this correspond to beginning of episodes,
             where the hidden states of the RNN must be reset.
         :param deterministic: Whether or not to return deterministic actions.
+           # 决定返回的动作状态是否为确定性的
         :return: the model's action and the next hidden state
+           # 返回模型的动作和下一个隐藏状态
             (used in recurrent policies)
         """
         # Switch to eval mode (this affects batch norm / dropout)

@@ -525,7 +525,7 @@ class ActorCriticPolicy(BasePolicy):
             # 返回一个特征提取的class
        
        # 控制 Actor 和 Critic 是否共享主干网络（backbone）的核心逻辑
-        self.features_extractor = self.make_features_extractor() # 定义网络主干实例
+        self.features_extractor = self.make_features_extractor() # 定义obs特征提取器实例，本质上是一个FlattenExtractor，展平
         self.features_dim = self.features_extractor.features_dim # 在BaseFeaturesExtractor基类中定义的
         if self.share_features_extractor:
                 # 策略和价值特征提取器共享一个class

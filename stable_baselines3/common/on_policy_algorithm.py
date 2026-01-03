@@ -198,8 +198,10 @@ class OnPolicyAlgorithm(BaseAlgorithm):
 
             with th.no_grad():
                 # Convert to pytorch tensor or to TensorDict
+                # 将观察到的空间状态，转换为 PyTorch 张量或 TensorDict
                 obs_tensor = obs_as_tensor(self._last_obs, self.device)  # type: ignore[arg-type]
                 actions, values, log_probs = self.policy(obs_tensor)
+                # 直接调用policy.forward()方法
             actions = actions.cpu().numpy()
 
             # Rescale and perform action

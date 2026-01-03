@@ -555,7 +555,7 @@ class ActorCriticPolicy(BasePolicy):
         self.dist_kwargs = dist_kwargs
 
         # Action distribution
-        # 返回动作的分布概率
+        # 返回动作的分布概率，根据动作空间类型，分配符合动作空间规律的分布(类型)函数，还没到构建action_net输出头output heads的时刻。
         self.action_dist = make_proba_distribution(action_space, use_sde=use_sde, dist_kwargs=dist_kwargs)
 
         self._build(lr_schedule)
@@ -618,7 +618,7 @@ class ActorCriticPolicy(BasePolicy):
         self._build_mlp_extractor()
 
         latent_dim_pi = self.mlp_extractor.latent_dim_pi
-
+         # 基于动作空间的分布(类型)函数self.action_dist，调用proba_distribution_net方法，构建action_net输出头output heads。
         if isinstance(self.action_dist, DiagGaussianDistribution):
             self.action_net, self.log_std = self.action_dist.proba_distribution_net(
                 latent_dim=latent_dim_pi, log_std_init=self.log_std_init

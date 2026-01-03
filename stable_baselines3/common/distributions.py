@@ -143,6 +143,11 @@ class DiagGaussianDistribution(Distribution):
         one output will be the mean of the Gaussian, the other parameter will be the
         standard deviation (log std in fact to allow negative values)
 
+        # 创建用于表示该分布的层和参数：
+        # 其中一个输出为高斯分布的均值，另一个参数为标准差（实际上是 log std，以允许取负值）
+
+        # 在创建action_net的输出头！！！输入维度是latent_pi_dim，输出维度是action_dim，依据env.action_spaces决定。
+
         :param latent_dim: Dimension of the last layer of the policy (before the action layer)
         :param log_std_init: Initial value for the log standard deviation
         :return:
@@ -157,6 +162,7 @@ class DiagGaussianDistribution(Distribution):
     ) -> SelfDiagGaussianDistribution:
         """
         Create the distribution given its parameters (mean, std)
+        # 根据其参数（均值、标准差）创建该分布。
 
         :param mean_actions:
         :param log_std:

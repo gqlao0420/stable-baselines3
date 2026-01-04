@@ -206,7 +206,7 @@ class OnPolicyAlgorithm(BaseAlgorithm):
 
             # Rescale and perform action
             clipped_actions = actions
-
+            # 这个地方就是为了将action_net输出的动作信号[-1, +1]，与真实环境的动作映射
             if isinstance(self.action_space, spaces.Box):
                 if self.policy.squash_output:
                     # Unscale the actions to match env bounds

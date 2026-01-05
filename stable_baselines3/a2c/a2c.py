@@ -138,6 +138,7 @@ class A2C(OnPolicyAlgorithm):
         self.policy.set_training_mode(True)
 
         # Update optimizer learning rate
+            # 只是更新学习率lr，并不更新网络参数！！！
         self._update_learning_rate(self.policy.optimizer)
 
         # This will only loop once (get all data in one go)
@@ -172,11 +173,15 @@ class A2C(OnPolicyAlgorithm):
             loss = policy_loss + self.ent_coef * entropy_loss + self.vf_coef * value_loss
 
             # Optimization step
+                # 网络权重参数置零
             self.policy.optimizer.zero_grad()
+                # 网络反向传播 backpropagation
             loss.backward()
 
             # Clip grad norm
+                # 参数阈值裁减
             th.nn.utils.clip_grad_norm_(self.policy.parameters(), self.max_grad_norm)
+                # 更新网络参数
             self.policy.optimizer.step()
 
         explained_var = explained_variance(self.rollout_buffer.values.flatten(), self.rollout_buffer.returns.flatten())
